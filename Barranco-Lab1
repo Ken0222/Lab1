@@ -20,3 +20,14 @@ void showListFilesMenu() {
     cout << "[3] List Files by Pattern (e.g., moha*.*)\n";
     cout << "Enter choice: ";
 }
+
+int getMenuChoice() {
+    int choice;
+    while (!(cin >> choice)) {
+        cout << "Invalid input. Enter a number: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    cin.ignore();
+    return choice;
+}
