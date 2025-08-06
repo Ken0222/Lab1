@@ -1,0 +1,22 @@
+#include <iostream>
+#include <string>
+#include <direct.h>
+#include <filesystem>
+
+using namespace std;
+namespace fs = std::filesystem;
+
+void showMainMenu() {
+    cout << "[1] List Files\n";
+    cout << "[2] Create Directory\n";
+    cout << "[3] Change Directory\n";
+    cout << "[4] Exit\n";
+    cout << "Enter option: ";
+}
+
+void showListFilesMenu() {
+    cout << "[1] List All Files\n";
+    cout << "[2] List Files by Extension (e.g., .txt)\n";
+    cout << "[3] List Files by Pattern (e.g., moha*.*)\n";
+    cout << "Enter choice: ";
+}
