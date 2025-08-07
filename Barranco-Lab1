@@ -66,22 +66,24 @@ void executeListFiles() {
             }
             case 3: {
                 string pattern;
-                cout << "Enter file pattern (e.g., moha*.*): ";
-                getline(cin, pattern);
+cout << "Enter file pattern (e.g., moha*.*): ";
+getline(cin, pattern);
 
-                cout << "\nListing files matching pattern " << pattern << ":\n";
-                bool foundMatch = false;
-                string prefix = pattern.substr(0, pattern.find('*')); // Extract prefix before '*'
-                for (const auto& entry : fs::directory_iterator(fs::current_path())) {
-                    string filename = entry.path().filename().string();
-                    if (filename.rfind(prefix, 0) == 0) { // Check if filename starts with prefix
-                        cout << filename << endl;
-                        foundMatch = true;
-                    }
-                }
-                if (!foundMatch) {
-                    cout << "No files found matching pattern " << pattern << "!\n";
-                }
+cout << "\nListing files matching pattern: " << pattern << endl;
+bool foundMatch = false;
+string prefix = pattern;
+
+for (const auto& entry : fs::directory_iterator(fs::current_path())) { //It's safer to use current_path()
+    string filename = entry.path().filename().string();
+    if (filename.rfind(prefix, 0) == 0) { // Check if filename starts with the prefix
+        cout << filename << endl;
+        foundMatch = true;
+    }
+}
+
+if (!foundMatch) {
+    cout << "No files found matching pattern: " << pattern << endl;
+}
                 break;
             }
             default:
