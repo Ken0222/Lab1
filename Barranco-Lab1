@@ -31,3 +31,63 @@ int getMenuChoice() {
     cin.ignore();
     return choice;
 }
+
+void executeListFiles() {
+    showListFilesMenu();
+    int choice = getMenuChoice();
+
+    try {
+        switch (choice) {
+            case 1: {
+                cout << "\nFiles in current directory:\n";
+                fs::path currentDir = fs::current_path();
+                for (const auto& entry : fs::directory_iterator(currentDir)) {
+                    cout << "- " << entry.path().filename().string() << endl;
+                }
+                break;
+            }
+            case 2: {
+                string ext;
+                cout << "Enter file extension (include the dot, e.g., .txt): ";
+                getline(cin, ext);
+
+                cout << "\nListing files with extension " << ext << ":\n";
+                bool foundAny = false;
+                for (const auto& entry : fs::directory_iterator(fs::current_path())) {
+                    if (entry.path().extension().string() == ext) {
+                        cout << entry.path().filename().string() << endl;
+                        foundAny = true;
+                    }
+                }
+                if (!foundAny) {
+                    cout << "No files found with extension " << ext << "!\n";
+                }
+                break;
+            }
+            case 3: {
+                string pattern;
+                cout << "Enter file pattern (e.g., moha*.*): ";
+                getline(cin, pattern);
+
+                cout << "\nListing files matching pattern " << pattern << ":\n";
+                bool foundMatch = false;
+                string prefix = pattern.substr(0, pattern.find('*')); // Extract prefix before '*'
+                for (const auto& entry : fs::directory_iterator(fs::current_path())) {
+                    string filename = entry.path().filename().string();
+                    if (filename.rfind(prefix, 0) == 0) { // Check if filename starts with prefix
+                        cout << filename << endl;
+                        foundMatch = true;
+                    }
+                }
+                if (!foundMatch) {
+                    cout << "No files found matching pattern " << pattern << "!\n";
+                }
+                break;
+            }
+            default:
+                cout << "Invalid choice!\n";
+        }
+    } catch (const fs::filesystem_error& e) {
+        cerr << "Filesystem error: " << e.what() << endl;
+    }
+}
