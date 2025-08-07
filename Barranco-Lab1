@@ -91,3 +91,105 @@ void executeListFiles() {
         cerr << "Filesystem error: " << e.what() << endl;
     }
 }
+
+void executeCreateDirectory() {
+    string dirName;
+    cout << "\nEnter new directory name: ";
+    getline(cin, dirName);
+    fs::path newDirPath = dirName;
+
+    if (fs::exists(newDirPath)) {
+        cout << "Error: Directory \"" << dirName << "\" already exists!\n";
+    } else {
+        try {
+            if (fs::create_directory(newDirPath)) {
+                cout << "Directory \"" << dirName << "\" created successfully.\n";
+            } else {
+                cout << "Error: Failed to create directory \"" << dirName << "\"!\n";
+            }
+        } catch (const fs::filesystem_error& e) {
+            cerr << "Filesystem error: " << e.what() << endl;
+        }
+    }
+}
+
+void showChangeDirectoryMenu() {
+    cout << "\nChange Directory Menu\n";
+    cout << "[1] Move to Parent Directory\n";
+    cout << "[2] Move to Root Directory\n";
+    cout << "[3] Enter Custom Path (e.g., C:\\Users\\Documents)\n";
+    cout << "Enter choice: ";
+}
+
+void executeChangeDirectory() {
+    showChangeDirectoryMenu();
+    int choice = getMenuChoice();
+
+    try {
+        switch (choice) {
+            case 1: {
+                fs::path currPath = fs::current_path();
+                fs::path parPath = currPath.parent_path();
+
+                if (parPath != currPath) {
+                    fs::current_path(parPath);
+                    cout << "Changed to parent directory: " << fs::current_path().string() << endl;
+                } else {
+                    cout << "Error: Already at root or no parent directory exists!\n";
+                }
+                break;
+            }
+            case 2: {
+                fs::current_path(fs::current_path().root_path());
+                cout << "Changed to root directory: " << fs::current_path().string() << endl;
+                break;
+            }
+            case 3: {
+                string pathStr;
+                cout << "Enter new directory path (e.g., C:\\Users\\Documents): ";
+                getline(cin, pathStr);
+                fs::path newPath(pathStr);
+
+                if (fs::exists(newPath) && fs::is_directory(newPath)) {
+                    fs::current_path(newPath);
+                    cout << "Changed to directory: " << fs::current_path().string() << endl;
+                } else {
+                    cout << "Error: Directory \"" << pathStr << "\" not found!\n";
+                }
+                break;
+            }
+            default:
+                cout << "Invalid choice!\n";
+        }
+    } catch (const fs::filesystem_error& e) {
+        cerr << "Filesystem error: " << e.what() << endl;
+    }
+}
+
+int main() {
+    int userChoice;
+    do {
+        showMainMenu();
+        userChoice = getMenuChoice();
+
+        switch (userChoice) {
+            case 1:
+                executeListFiles();
+                break;
+            case 2:
+                executeCreateDirectory();
+                break;
+            case 3:
+                executeChangeDirectory();
+                break;
+            case 4:
+                cout << "Exiting program.\n";
+                break;
+            default:
+                cout << "Invalid option. Please try again.\n";
+        }
+    } while (userChoice != 4);
+
+    return 0;
+}
+
